@@ -20,9 +20,25 @@
     directory, which by default is:
     C:\Program Files\Harman Pro\London Architect\London DI Kit.pdf
     
+    CONVENTIONS
+    
+    All elements exposed globally by this library are prefixed with "BSS".
+    
     Underscores prefixing function names indicate low-level
     functions used by this library.  These functions typically
     won't need to be used by the control system developer.
+    
+    BSS controls are referenced by an 8-byte array consisting of the
+    object's 6-byte HiQnet Address (node, virtual device, object)
+    followed by the parameter's 2-byte state variable ID.  This looks
+    like:
+    
+    MY_FADER[] = {$05, $f1, $03, $00, $01, $07, $4e, $20}
+                  ------ HiQnet Address ------  -- SV --
+    
+    A network connection only needs to be established from AMX to one
+    BSS device, since HiQnet can pass messages between nodes.  Bind
+    vdvBSS to one physical device.
 *************************************************************
     Copyright 2012 Alex McLain
     
@@ -61,19 +77,28 @@ PROGRAM_NAME='amx-lib-bss'
 (***********************************************************)
 DEFINE_DEVICE
 
+vdvBSS = 36999:1:0;
+
 (***********************************************************)
 (*              CONSTANT DEFINITIONS GO BELOW              *)
 (***********************************************************)
 DEFINE_CONSTANT
 
+BSS_TCP_PORT = 1023;
+
+// Message acknowledgement mode.
+// Off for TCP, on for serial.
+BSS_MSG_ACK_OFF = 0;
+BSS_MSG_ACK_ON  = 1;
+
 //   BSS DIRECT INJECT MESSAGING PROTOCOL DEFINITIONS   //
 
 // Special bytes.
-BSS_STX		= $02;	// Start of packet.
-BSS_ETX		= $03;	// End of packet.
-BSS_ACK		= $06;  // Packet acknowledgement (not used for TCP/IP).
-BSS_NAK		= $15;	// Negative acknowledgement.
-BSS_ESC		= $18;	// Escape character.
+BSS_STX	= $02;	// Start of packet.
+BSS_ETX	= $03;	// End of packet.
+BSS_ACK	= $06;  // Packet acknowledgement (not used for TCP/IP).
+BSS_NAK	= $15;	// Negative acknowledgement.
+BSS_ESC	= $18;	// Escape character.
 
 // Command bytes.
 BSS_DI_SETSV			= $88;	// Set state variable.
@@ -96,6 +121,8 @@ DEFINE_TYPE
 (***********************************************************)
 DEFINE_VARIABLE
 
+bssMsgAck = BSS_MSG_ACK_OFF;	// Message acknowledgement mode.  Off for TCP, on for serial.
+
 (***********************************************************)
 (*              LATCHING DEFINITIONS GO BELOW              *)
 (***********************************************************)
@@ -115,72 +142,99 @@ DEFINE_MUTUALLY_EXCLUSIVE
 /*
  *  Set state variable.
  */
-define_function bssSet()
+define_function bssSet(char control[], slong value)
 {
-
+    // Msg body: <DI_SETSV> <node> <virtual device> <object> <state variable> <data>
 }
 
 /*
  *  Subscribe to variable.
  */
-define_function bssSubscribe()
+define_function bssSubscribe(char control[], slong rate)
 {
-
+    // Msg body: <DI_SUBSCRIBESV> <node> <virtual device> <object> <state variable> <rate>
 }
 
 /*
  *  Unsubscribe from variable.
  */
-define_function bssUnsubscribe()
+define_function bssUnsubscribe(char control[])
 {
-
+    // Msg body: <DI_UNSUBSCRIBESV> <node> <virtual device> <object> <state variable> <0>
 }
 
 /*
  *  Recall a venue preset.
  */
-define_function bssVenueRecall()
+define_function bssVenueRecall(long value)
 {
-
+    // Msg body: <DI_VENUE_PRESET_RECALL> <data>
 }
 
 /*
  *  Recall a parameter preset.
  */
-define_function bssPresetRecall()
+define_function bssPresetRecall(long value)
 {
+    // Msg body: <DI_PARAM_PRESET_RECALL> <data>
+}
 
+/*
+ *  Set state variable as percent.
+ */
+define_function bssSetPercent(char control[], slong value)
+{
+    // Msg body: <DI_SETSVPERCENT> <node> <virtual device> <object> <state variable> <percentage>
 }
 
 /*
  *  Subscribe to variable as percent.
  */
-define_function bssSubscribePercent()
+define_function bssSubscribePercent(char control[], long rate)
 {
-
+    // Msg body: <DI_SUBSCRIBESVPERCENT> <node> <virtual device> <object> <state variable> <rate>
 }
 
 /*
  *  Unsubscribe from variable as percent.
  */
-define_function bssUnsubscribePercent()
+define_function bssUnsubscribePercent(char control[])
 {
-
+    // Msg body: <DI_UNSUBSCRIBESVPERCENT> <node> <virtual device> <object> <state variable> <0>
 }
 
 /*
  *  Bump the state variable by the given percent.
  *  += up, -= down
  */
-define_function bssBumpPercent()
+define_function bssBumpPercent(char control[], long value)
 {
-
+    // Msg body: <DI_BUMPSVPERCENT> <node> <virtual device> <object> <state variable> <+/- percentage>
 }
 
 /*
  *  Calculate data checksum.
  */
-define_function char _bssChecksum()
+define_function char _bssChecksum(str[])
+{
+
+}
+
+/*
+ *  Send packet to the DSP device.
+ */
+define_function _bssSend(char body[])
+{
+    char packet[16];
+    
+    // Wrap body data with STX, checksum, and ETX bytes.
+    // Escape special characters.
+}
+
+/*
+ *  Convert long to byte.
+ */
+define_function char[4] _bssLongToByte(slong value)
 {
 
 }
