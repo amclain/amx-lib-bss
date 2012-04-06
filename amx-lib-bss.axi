@@ -86,6 +86,8 @@ DEFINE_CONSTANT
 
 BSS_TCP_PORT = 1023;
 
+BSS_MAX_PACKET_LEN = 29; // 12 characters in body that can be escaped (24 bytes), + msg type, STX, ETX, checksum (2 bytes escaped).
+
 // Message acknowledgement mode.
 // Off for TCP, on for serial.
 BSS_MSG_ACK_OFF = 0;
@@ -145,6 +147,8 @@ DEFINE_MUTUALLY_EXCLUSIVE
 define_function bssSet(char control[], slong value)
 {
     // Msg body: <DI_SETSV> <node> <virtual device> <object> <state variable> <data>
+    
+    _bssSend("BSS_DI_SETSV, control, _bssLongToByte(value)");
 }
 
 /*
@@ -153,6 +157,8 @@ define_function bssSet(char control[], slong value)
 define_function bssSubscribe(char control[], slong rate)
 {
     // Msg body: <DI_SUBSCRIBESV> <node> <virtual device> <object> <state variable> <rate>
+    
+    _bssSend("BSS_DI_SUBSCRIBESV, control, _bssLongToByte(rate)");
 }
 
 /*
@@ -161,22 +167,28 @@ define_function bssSubscribe(char control[], slong rate)
 define_function bssUnsubscribe(char control[])
 {
     // Msg body: <DI_UNSUBSCRIBESV> <node> <virtual device> <object> <state variable> <0>
+    
+    _bssSend("BSS_DI_UNSUBSCRIBESV, control, $00");
 }
 
 /*
  *  Recall a venue preset.
  */
-define_function bssVenueRecall(long value)
+define_function bssVenueRecall(slong value)
 {
     // Msg body: <DI_VENUE_PRESET_RECALL> <data>
+    
+    _bssSend("BSS_DI_VENUE_PRESET_RECALL, _bssLongToByte(value)");
 }
 
 /*
  *  Recall a parameter preset.
  */
-define_function bssPresetRecall(long value)
+define_function bssPresetRecall(slong value)
 {
     // Msg body: <DI_PARAM_PRESET_RECALL> <data>
+    
+    _bssSend("BSS_DI_PARAM_PRESET_RECALL, _bssLongToByte(value)");
 }
 
 /*
@@ -185,14 +197,18 @@ define_function bssPresetRecall(long value)
 define_function bssSetPercent(char control[], slong value)
 {
     // Msg body: <DI_SETSVPERCENT> <node> <virtual device> <object> <state variable> <percentage>
+    
+    _bssSend("BSS_DI_SETSVPERCENT, control, _bssLongToByte(value)");
 }
 
 /*
  *  Subscribe to variable as percent.
  */
-define_function bssSubscribePercent(char control[], long rate)
+define_function bssSubscribePercent(char control[], slong rate)
 {
     // Msg body: <DI_SUBSCRIBESVPERCENT> <node> <virtual device> <object> <state variable> <rate>
+    
+    _bssSend("BSS_DI_SUBSCRIBESVPERCENT, control, _bssLongToByte(rate)");
 }
 
 /*
@@ -201,23 +217,37 @@ define_function bssSubscribePercent(char control[], long rate)
 define_function bssUnsubscribePercent(char control[])
 {
     // Msg body: <DI_UNSUBSCRIBESVPERCENT> <node> <virtual device> <object> <state variable> <0>
+    
+    _bssSend("BSS_DI_UNSUBSCRIBESVPERCENT, control, $00");
 }
 
 /*
  *  Bump the state variable by the given percent.
  *  += up, -= down
  */
-define_function bssBumpPercent(char control[], long value)
+define_function bssBumpPercent(char control[], slong value)
 {
     // Msg body: <DI_BUMPSVPERCENT> <node> <virtual device> <object> <state variable> <+/- percentage>
+    
+    _bssSend("BSS_DI_BUMPSVPERCENT, control, _bssLongToByte(value)");
 }
 
 /*
  *  Calculate data checksum.
  */
-define_function char _bssChecksum(str[])
+define_function char _bssChecksum(char str[])
 {
-
+    integer i;
+    char checksum;
+    
+    checksum = 0;
+    
+    for (i = 1; i <= length_array(str); i++)
+    {
+	checksum = (checksum ^ str[i]);
+    }
+    
+    return checksum;
 }
 
 /*
@@ -225,10 +255,30 @@ define_function char _bssChecksum(str[])
  */
 define_function _bssSend(char body[])
 {
-    char packet[16];
+    integer i;
+    char packet[BSS_MAX_PACKET_LEN];	// Packet to be transmitted.
+    char payload[BSS_MAX_PACKET_LEN];	// Data between the STX/ETX bytes to be escaped (body + checksum).
     
-    // Wrap body data with STX, checksum, and ETX bytes.
-    // Escape special characters.
+    payload = "body, _bssChecksum(body)"; // Construct the payload.
+    
+    // Escape special characters in payload data and wrap with STX, checksum, and ETX bytes.
+    packet = "BSS_STX";
+    
+    for (i = 1; i <= length_array(payload); i++)
+    {
+	if (_bssIsSpecialChar(payload[i]) == false)
+	{
+	    packet = "packet, payload[i]";
+	}
+	else
+	{
+	    packet = "packet, BSS_ESC, payload[i] + $80";
+	}
+    }
+    
+    packet = "packet, BSS_ETX";
+    
+    send_string vdvBSS, packet;
 }
 
 /*
@@ -236,7 +286,31 @@ define_function _bssSend(char body[])
  */
 define_function char[4] _bssLongToByte(slong value)
 {
+    // TODO: IMPLEMENT
+    return "$00, $00, $00, $00";
+}
 
+/*
+ *  Test for special character.
+ *  Returns boolean: True if character is special and needs to be escaped.
+ */
+define_function integer _bssIsSpecialChar(char c)
+{
+    switch(c)
+    {
+	case BSS_STX:
+	case BSS_ETX:
+	case BSS_ACK:
+	case BSS_NAK:
+	case BSS_ESC:
+	{
+	    return true;
+	}
+	
+	default: break;
+    }
+    
+    return false;
 }
 
 (***********************************************************)
