@@ -19,6 +19,10 @@ PROGRAM_NAME='bss-tests'
 #include 'amx-test-suite'
 #include 'amx-lib-bss'
 
+DEFINE_DEVICE
+
+dvTelnet = 0:49000:0;
+
 (***********************************************************)
 (*              CONSTANT DEFINITIONS GO BELOW              *)
 (***********************************************************)
@@ -38,7 +42,13 @@ DEFINE_MUTUALLY_EXCLUSIVE
 
 define_function testSuiteRun()
 {
+    ip_client_open(49000, '192.168.0.37', 23, IP_TCP);
+    combine_devices(vdvBSS, dvTelnet);
+    
     testCommands();
+    
+    uncombine_devices(vdvBSS);
+    ip_client_close(49000);
 }
 
 define_function testCommands()
@@ -46,28 +56,9 @@ define_function testCommands()
     local_var char str[BSS_MAX_PACKET_LEN];
     str = "TEST_OBJECT, $00, $00, $00, $00";
     
-    debug = "BSS_STX, BSS_DI_SETSV, str, _bssChecksum(str), BSS_ETX";
-    //testSuitePrint("'Length: ', itoa(length_array(debug))");
-    send_string 0, "BSS_STX, BSS_DI_SETSV, str, _bssChecksum(str), BSS_ETX";
-    
-    ip_client_open(49000, '192.168.0.37', 23, IP_TCP);
-    wait 5
-    {
-	send_string 0:49000:0, "BSS_STX, BSS_DI_SETSV, str, _bssChecksum(str), BSS_ETX";
-	wait 5
-	{
-	    ip_client_close(49000);
-	}
-    }
-    
     bssSet(TEST_OBJECT, 0);
     assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSV, str, _bssChecksum(str), BSS_ETX", 'BSS set.');
 }
-
-(***********************************************************)
-(*                 STARTUP CODE GOES BELOW                 *)
-(***********************************************************)
-DEFINE_START
 
 (***********************************************************)
 (*                   THE EVENTS GO BELOW                   *)
@@ -85,6 +76,24 @@ data_event[vdvBSS]
 	e.type = TEST_SUITE_EVENT_STRING;
 	
 	testSuiteEventTriggered(e);
+	
+	/*
+	// WIRESHARK VERIFICATION
+	{
+	local_var char temp[BSS_MAX_PACKET_LEN];
+	temp = data.text;
+	
+	ip_client_open(49000, '192.168.0.37', 23, IP_TCP);
+	wait 5
+	{
+	    send_string 0:49000:0, temp;
+	    wait 5
+	    {
+		ip_client_close(49000);
+	    }
+	}
+	}
+	*/
     }
 }
 
