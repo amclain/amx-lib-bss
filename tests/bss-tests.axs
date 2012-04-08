@@ -21,7 +21,7 @@ PROGRAM_NAME='bss-tests'
 
 DEFINE_DEVICE
 
-dvTelnet = 0:49000:0;
+//dvTelnet = 0:first_local_port:0;
 
 (***********************************************************)
 (*              CONSTANT DEFINITIONS GO BELOW              *)
@@ -30,10 +30,11 @@ DEFINE_CONSTANT
 
 TEST_OBJECT[] = {$01, $02, $03, $04, $05, $06, $07, $08};
 
+TEST_OBJECT_ESCAPED[] = {$01, BSS_ESC, $82, BSS_ESC, $83, $04, $05, BSS_ESC, $86, $07, $08};
 
 DEFINE_VARIABLE
 
-char debug[BSS_MAX_PACKET_LEN];
+//char debug[BSS_MAX_PACKET_LEN];
 
 (***********************************************************)
 (*                TEST DEFINITIONS GO BELOW                *)
@@ -42,22 +43,19 @@ DEFINE_MUTUALLY_EXCLUSIVE
 
 define_function testSuiteRun()
 {
-    ip_client_open(49000, '192.168.0.37', 23, IP_TCP);
-    combine_devices(vdvBSS, dvTelnet);
+    //ip_client_open(first_local_port, '10.0.20.51', 23, IP_TCP);
+    //combine_devices(vdvBSS, dvTelnet);
     
     testCommands();
     
-    uncombine_devices(vdvBSS);
-    ip_client_close(49000);
+    //uncombine_devices(vdvBSS);
+    //ip_client_close(first_local_port);
 }
 
 define_function testCommands()
 {
-    local_var char str[BSS_MAX_PACKET_LEN];
-    str = "TEST_OBJECT, $00, $00, $00, $00";
-    
     bssSet(TEST_OBJECT, 0);
-    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSV, str, _bssChecksum(str), BSS_ETX", 'BSS set.');
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSV, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $80, BSS_ETX", 'BSS set.');
 }
 
 (***********************************************************)
@@ -76,6 +74,8 @@ data_event[vdvBSS]
 	e.type = TEST_SUITE_EVENT_STRING;
 	
 	testSuiteEventTriggered(e);
+	
+	//debug = data.text;
 	
 	/*
 	// WIRESHARK VERIFICATION
