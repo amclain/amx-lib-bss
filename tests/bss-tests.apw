@@ -116,11 +116,11 @@
 <SalesOrder></SalesOrder>
 <PurchaseOrder></PurchaseOrder>
 <Comments></Comments>
-<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>bss-tests</Identifier>
+<System IsActive="false" Platform="Netlinx" Transport="TCPIP"><Identifier>bss-tests</Identifier>
 <SysID>0</SysID>
 <TransSerial>COM5,38400,8,None,1,None</TransSerial>
 <TransModem>COM1,38400,8,None,1,None</TransModem>
-<TransTCPIP>10.0.20.65:1319:1:AMX::</TransTCPIP>
+<TransTCPIP>192.168.0.29:1319:1:Dev::</TransTCPIP>
 <VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
 <VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
 <VNMSystemID>1</VNMSystemID>
@@ -140,6 +140,29 @@
 </File>
 <File CompileType="Netlinx" Type="MasterSrc"><Identifier>bss-tests</Identifier>
 <FilePathName>bss-tests.axs</FilePathName>
+<Comments></Comments>
+</File>
+</System>
+<System IsActive="true" Platform="Netlinx" Transport="TCPIP"><Identifier>integration-testing</Identifier>
+<SysID>0</SysID>
+<TransSerial>COM5,38400,8,None,1,None</TransSerial>
+<TransModem>COM1,38400,8,None,1,None</TransModem>
+<TransTCPIP>192.168.0.29:1319:1:Dev::</TransTCPIP>
+<VirtualNetLinxMasterFlag>0</VirtualNetLinxMasterFlag>
+<VNMRestoreIPSettings>0.0.0.0:1319:1</VNMRestoreIPSettings>
+<VNMSystemID>1</VNMSystemID>
+<VNMIPAddress>10.0.0.1</VNMIPAddress>
+<VNMMaskAddress>255.255.255.0</VNMMaskAddress>
+<IsAuthenticationEnabled>0</IsAuthenticationEnabled>
+<UserName></UserName>
+<Password></Password>
+<Comments></Comments>
+<File CompileType="None" Type="Include"><Identifier>amx-lib-bss</Identifier>
+<FilePathName>..\amx-lib-bss.axi</FilePathName>
+<Comments></Comments>
+</File>
+<File CompileType="Netlinx" Type="MasterSrc"><Identifier>bss-integration-tests</Identifier>
+<FilePathName>bss-integration-tests.axs</FilePathName>
 <Comments></Comments>
 </File>
 </System>

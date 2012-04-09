@@ -104,7 +104,7 @@ BSS_STX	= $02;	// Start of packet.
 BSS_ETX	= $03;	// End of packet.
 BSS_ACK	= $06;  // Packet acknowledgement (not used for TCP/IP).
 BSS_NAK	= $15;	// Negative acknowledgement.
-BSS_ESC	= $18;	// Escape character.
+BSS_ESC	= $1B;	// Escape character.
 
 // Command bytes.
 BSS_DI_SETSV			= $88;	// Set state variable.
@@ -198,11 +198,11 @@ define_function bssPresetRecall(slong value)
 /*
  *  Set state variable as percent.
  */
-define_function bssSetPercent(char control[], slong value)
+define_function bssSetPercent(char control[], long value)
 {
     // Msg body: <DI_SETSVPERCENT> <node> <virtual device> <object> <state variable> <percentage>
     
-    _bssSend("BSS_DI_SETSVPERCENT, control, _bssLongToByte(value)");
+    _bssSend("BSS_DI_SETSVPERCENT, control, _bssLongToByte(type_cast(value << 16))");
 }
 
 /*

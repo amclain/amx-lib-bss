@@ -1,5 +1,5 @@
 (***********************************************************
-    BSS SOUNDWEB LONDON PROTOCOL
+    BSS SOUNDWEB LONDON API
     TESTS
     
     Website: https://sourceforge.net/projects/amx-lib-bss/
@@ -29,7 +29,6 @@ DEFINE_DEVICE
 DEFINE_CONSTANT
 
 TEST_OBJECT[] = {$01, $02, $03, $04, $05, $06, $07, $08};
-
 TEST_OBJECT_ESCAPED[] = {$01, BSS_ESC, $82, BSS_ESC, $83, $04, $05, BSS_ESC, $86, $07, $08};
 
 (***********************************************************)
@@ -99,6 +98,9 @@ define_function testCommands()
     
     bssSetPercent(TEST_OBJECT, 0);
     assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSVPERCENT, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $85, BSS_ETX", 'BSS set percent.');
+    
+    bssSetPercent(TEST_OBJECT, 50);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSVPERCENT, TEST_OBJECT_ESCAPED, $00, $32, $00, $00, $B7, BSS_ETX", 'BSS set percent 50%.');
     
     bssSubscribePercent(TEST_OBJECT, 0);
     assertEventString(vdvBSS, "BSS_STX, BSS_DI_SUBSCRIBESVPERCENT, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $86, BSS_ETX", 'BSS subscribe percent.');
