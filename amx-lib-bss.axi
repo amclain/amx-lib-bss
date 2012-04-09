@@ -6,11 +6,11 @@
     
     
  -- THIS IS A THIRD-PARTY LIBRARY AND IS NOT AFFILIATED WITH --
- --               THE AMX ORGANIZATION OR BSS                --
+ --               THE AMX OR BSS ORGANIZATIONS               --
     
     
-    This library contains the code to interface with a
-    BSS Soundweb London device, like the BLU series products.
+    This library contains the code to interface with BSS Soundweb London
+    devices, like the BLU series products.
     
     It is assumed the developer has read the Soundweb London
     Interface Kit documentation (London DI Kit.pdf) provided
