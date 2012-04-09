@@ -1,5 +1,5 @@
 (***********************************************************
-    AMX BSS LIBRARY
+    AMX BSS API
     v0.0.1
     
     Website: https://sourceforge.net/projects/[Future]
