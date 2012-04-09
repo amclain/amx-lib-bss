@@ -238,6 +238,7 @@ define_function bssBumpPercent(char control[], slong value)
 
 /*
  *  Encode a percentage.
+ *  (Fixed-point fractional value.)
  */
 define_function slong bssEncodePercent(double value)
 {
@@ -246,32 +247,62 @@ define_function slong bssEncodePercent(double value)
 
 /*
  *  Decode a percentage.
+ *  (Fixed-point fractional value.)
  */
 define_function double bssDecodePercent(slong value)
 {
     return type_cast(value / 65535);
 }
 
+/*
+ *  Encode a scalar linear scaling value.
+ *  
+ *  Used for:
+ *  Meter reference, leveller threshold, parametric filter boost/cut,
+ *  compressor threshold, automixer slope, parametric filter width,
+ *  mixer pan.
+ */
 define_function slong bssEncodeScalar(slong value)
 {
-
+    return value * 10000;
 }
 
+/*
+ *  Decode a scalar linear scaling value.
+ *  
+ *  Used for:
+ *  Meter reference, leveller threshold, parametric filter boost/cut,
+ *  compressor threshold, automixer slope, parametric filter width,
+ *  mixer pan.
+ */
 define_function slong bssDecodeScalar(slong value)
 {
-
+    return value / 10000
 }
 
+/*
+ *  Encode a gain value.
+ */
 define_function slong bssEncodeGain(double value)
 {
     if (value > -10) return type_cast(value * 10000);
     
-    return type_cast(-1 * ((log10_value(abs_value(value / 10)) * (200000)) - 100000));
+    // TODO: This equation is returning a function call error.
+    
+    return type_cast(-1 * ((log10_value(abs_value(value / 10)) * 200000) - 100000));
 }
 
+/*
+ *  Decode a gain value.
+ */
 define_function double bssDecodeGain(slong value)
 {
-
+    if (value >= -10000) return type_cast(value / 10000);
+    
+    // TODO: bssEncodeGain() needs to be fixed first.
+    
+    //return -10 * (10 ^ (abs_value(value + 100000) / 200000));
+    return 0;
 }
 
 /*

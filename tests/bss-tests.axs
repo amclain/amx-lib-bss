@@ -43,6 +43,7 @@ define_function testSuiteRun()
     //combine_devices(vdvBSS, dvTelnet);
  
     testLongToByte();
+    testEncodeDecode();
     testCommands();
     
     //uncombine_devices(vdvBSS);
@@ -58,6 +59,25 @@ define_function testLongToByte()
     
     bytes = _bssLongToByte(type_cast(-11163017));
     assertString(bytes, "$ff, $55, $aa, $77", 'Assert negative long to byte.');
+}
+
+define_function testEncodeDecode()
+{
+    double d;
+    slong l;
+    
+    d = -20; // Test -20dB.
+    
+    // PROBLEMS WITH HOW AMX HANDLES THE SOUNDWEB GAIN SCALING EQUATION.
+    // It looks like log10 is returning 0 due to a function call error.
+    
+    //testSuitePrint("'fn: ', ftoa((log10_value(abs_value(d / 10)) * -1 * 200000) - 100000)");
+    
+    //testSuitePrint("'slong: ', ftoa(d)");
+    //testSuitePrint("'value: ', itoa(bssEncodeGain(d))");
+    //testSuitePrint("'value: ', itohex(bssEncodeGain(d))");
+    
+    //assert(bssEncodeGain(d) == -160205, 'Encode gain.');
 }
 
 define_function testCommands()
