@@ -32,10 +32,6 @@ TEST_OBJECT[] = {$01, $02, $03, $04, $05, $06, $07, $08};
 
 TEST_OBJECT_ESCAPED[] = {$01, BSS_ESC, $82, BSS_ESC, $83, $04, $05, BSS_ESC, $86, $07, $08};
 
-DEFINE_VARIABLE
-
-//char debug[BSS_MAX_PACKET_LEN];
-
 (***********************************************************)
 (*                TEST DEFINITIONS GO BELOW                *)
 (***********************************************************)
@@ -58,16 +54,40 @@ define_function testLongToByte()
     char bytes[4];
     
     bytes = _bssLongToByte($01b2c3d4);
-    
-    testSuitePrint("'Bytes: ', bytes");
-    
     assertString(bytes, "$01, $b2, $c3, $d4", 'Assert long to byte.');
+    
+    bytes = _bssLongToByte(type_cast(-11163017));
+    assertString(bytes, "$ff, $55, $aa, $77", 'Assert negative long to byte.');
 }
 
 define_function testCommands()
 {
     bssSet(TEST_OBJECT, 0);
     assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSV, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $80, BSS_ETX", 'BSS set.');
+    
+    bssSubscribe(TEST_OBJECT, 0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SUBSCRIBESV, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $81, BSS_ETX", 'BSS subscribe.');
+    
+    bssUnsubscribe(TEST_OBJECT);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_UNSUBSCRIBESV, TEST_OBJECT_ESCAPED, $00, $82, BSS_ETX", 'BSS unsubscribe.');
+    
+    bssVenueRecall(0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_VENUE_PRESET_RECALL, $00, $00, $00, $00, $8B, BSS_ETX", 'BSS venue recall.');
+    
+    bssPresetRecall(0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_PARAM_PRESET_RECALL, $00, $00, $00, $00, $8C, BSS_ETX", 'BSS preset recall.');
+    
+    bssSetPercent(TEST_OBJECT, 0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SETSVPERCENT, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $85, BSS_ETX", 'BSS set percent.');
+    
+    bssSubscribePercent(TEST_OBJECT, 0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_SUBSCRIBESVPERCENT, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $86, BSS_ETX", 'BSS subscribe percent.');
+    
+    bssUnsubscribePercent(TEST_OBJECT);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_UNSUBSCRIBESVPERCENT, TEST_OBJECT_ESCAPED, $00, $87, BSS_ETX", 'BSS unsubscribe percent.');
+    
+    bssBumpPercent(TEST_OBJECT, 0);
+    assertEventString(vdvBSS, "BSS_STX, BSS_DI_BUMPSVPERCENT, TEST_OBJECT_ESCAPED, $00, $00, $00, $00, $98, BSS_ETX", 'BSS bump percent.');
 }
 
 (***********************************************************)
