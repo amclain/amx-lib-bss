@@ -123,7 +123,7 @@ DEFINE_TYPE
 (***********************************************************)
 DEFINE_VARIABLE
 
-bssMsgAck = BSS_MSG_ACK_OFF;	// Message acknowledgement mode.  Off for TCP, on for serial.
+char bssMsgAck = BSS_MSG_ACK_OFF;	// Message acknowledgement mode.  Off for TCP, on for serial.
 
 (***********************************************************)
 (*              LATCHING DEFINITIONS GO BELOW              *)
@@ -282,12 +282,26 @@ define_function _bssSend(char body[])
 }
 
 /*
- *  Convert long to byte.
+ *  Convert long to bytes.
+ *  Returns bytes in big endian for network transport.
  */
 define_function char[4] _bssLongToByte(slong value)
 {
-    // TODO: IMPLEMENT
-    return "$00, $00, $00, $00";
+    char output[4];
+    integer i;
+    long l;
+    
+    l = type_cast(value);
+    
+    for (i = 4; i >= 1; i--)
+    {
+	output[i] = type_cast(l & $000000FF); // Mask last 8 bits of the long to a byte.
+	l = l >> 8;
+    }
+    
+    set_length_array(output, 4);
+    
+    return output;
 }
 
 /*

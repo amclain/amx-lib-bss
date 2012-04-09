@@ -45,11 +45,23 @@ define_function testSuiteRun()
 {
     //ip_client_open(first_local_port, '10.0.20.51', 23, IP_TCP);
     //combine_devices(vdvBSS, dvTelnet);
-    
+ 
+    testLongToByte();
     testCommands();
     
     //uncombine_devices(vdvBSS);
     //ip_client_close(first_local_port);
+}
+
+define_function testLongToByte()
+{
+    char bytes[4];
+    
+    bytes = _bssLongToByte($01b2c3d4);
+    
+    testSuitePrint("'Bytes: ', bytes");
+    
+    assertString(bytes, "$01, $b2, $c3, $d4", 'Assert long to byte.');
 }
 
 define_function testCommands()
