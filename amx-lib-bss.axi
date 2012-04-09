@@ -237,6 +237,44 @@ define_function bssBumpPercent(char control[], slong value)
 }
 
 /*
+ *  Encode a percentage.
+ */
+define_function slong bssEncodePercent(double value)
+{
+    return type_cast(value * 65536);
+}
+
+/*
+ *  Decode a percentage.
+ */
+define_function double bssDecodePercent(slong value)
+{
+    return type_cast(value / 65535);
+}
+
+define_function slong bssEncodeScalar(slong value)
+{
+
+}
+
+define_function slong bssDecodeScalar(slong value)
+{
+
+}
+
+define_function slong bssEncodeGain(double value)
+{
+    if (value > -10) return type_cast(value * 10000);
+    
+    return type_cast(-1 * ((log10_value(abs_value(value / 10)) * (200000)) - 100000));
+}
+
+define_function double bssDecodeGain(slong value)
+{
+
+}
+
+/*
  *  Calculate data checksum.
  */
 define_function char _bssChecksum(char str[])
