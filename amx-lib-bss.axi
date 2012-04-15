@@ -80,7 +80,7 @@ DEFINE_DEVICE
 #if_not_defined vdvBSS
 // Virtual BSS device.  Device-combine this to the physical device.
 // This can also be overridden in the master source code file if necessary.
-vdvBSS = 36999:1:0;
+vdvBSS = 36998:1:0;
 #end_if
 
 (***********************************************************)
