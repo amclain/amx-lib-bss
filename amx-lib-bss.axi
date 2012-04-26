@@ -33,8 +33,14 @@
     followed by the parameter's 2-byte state variable ID.  This looks
     like:
     
-    MY_FADER[] = {$05, $f1, $03, $00, $01, $07, $4e, $20}
-                  ------ HiQnet Address ------  -- SV --
+    MY_FADERS[] = {$05, $F1, $03, $00, $01, $07, $4E, $20}
+                   ------ HiQnet Address ------  -- SV --
+    
+    It is also possible to only store the HiQnet addresses and append
+    the state variable when calling this API.  For example, calling a
+    setVolume() function will always adjust a gain, so the function can
+    append the gain fader state variable to the HiQnet address passed
+    to it.
     
     A network connection only needs to be established from AMX to one
     BSS device, since HiQnet can pass messages between nodes.  Bind
@@ -116,6 +122,60 @@ BSS_DI_SETSVPERCENT		= $8D;	// Set state variable by percentage.
 BSS_DI_SUBSCRIBESVPERCENT	= $8E;	// Subscribe to state variable as a percentage.
 BSS_DI_UNSUBSCRIBESVPERCENT	= $8F;	// Unsubscribe from a state variable as a percentage.
 BSS_DI_BUMPSVPERCENT		= $90;	// Bump the SV by the given signed percentage.
+
+////////////////////////////////
+//   COMMON STATE VARIABLES   //
+////////////////////////////////
+
+// Analog input card.
+BSS_SV_ANALOG_IN_GAIN[][]	= {{$00, $04}, {$00, $0A}, {$00, $10}, {$00, $16}};
+BSS_SV_ANALOG_IN_PHANTOM[][]	= {{$00, $05}, {$00, $0B}, {$00, $11}, {$00, $17}};
+BSS_SV_ANALOG_IN_MUTE[][]	= {{$07, $D0}, {$07, $D1}, {$07, $D2}, {$07, $D3}};
+
+// Analog output card.
+BSS_SV_ANALOG_OUT_MUTE[][]	= {{$07, $D0}, {$07, $D1}, {$07, $D2}, {$07, $D3}};
+
+// Digital input card.
+BSS_SV_DIGITAL_IN_MUTE[][]	= {{$07, $D0}, {$07, $D1}, {$07, $D2}, {$07, $D3}};
+
+// Digital output card.
+BSS_SV_DIGITAL_OUT_MUTE[][]	= {{$07, $D0}, {$07, $D1}, {$07, $D2}, {$07, $D3}};
+
+// AEC input card.
+BSS_SV_AEC_IN_GAIN[][]		= {{$00, $04}, {$00, $68}, {$00, $CC}, {$01, $30}};
+BSS_SV_AEC_IN_PHANTOM[][]	= {{$00, $05}, {$00, $69}, {$00, $CD}, {$01, $31}};
+BSS_SV_AEC_IN_AEC_ENABLE[][]	= {{$00, $0A}, {$00, $6E}, {$00, $D2}, {$01, $36}};
+BSS_SV_AEC_IN_AGC_ENABLE[][]	= {{$00, $14}, {$00, $78}, {$00, $DC}, {$01, $40}};
+BSS_SV_AEC_IN_AEC_MUTE[][]	= {{$00, $07}, {$00, $6B}, {$00, $CF}, {$01, $33}};
+BSS_SV_AEC_IN_DRY_MUTE[][]	= {{$00, $08}, {$00, $6C}, {$00, $D0}, {$01, $34}};
+
+// Gain mono.
+BSS_SV_GAIN_GAIN[]		= {$00, $00};
+BSS_SV_GAIN_MUTE[]		= {$00, $01};
+BSS_SV_GAIN_POLARITY[]		= {$00, $02};
+
+// N-Gain.
+BSS_SV_NGAIN_GAIN[][]		= {
+    {$00, $00}, {$00, $01}, {$00, $02}, {$00, $03}, {$00, $04}, {$00, $05}, {$00, $06}, {$00, $07}, {$00, $08}, {$00, $09},
+    {$00, $0A}, {$00, $0B}, {$00, $0C}, {$00, $0D}, {$00, $0E}, {$00, $0F}, {$00, $10}, {$00, $11}, {$00, $12}, {$00, $13},
+    {$00, $14}, {$00, $15}, {$00, $16}, {$00, $17}, {$00, $18}, {$00, $19}, {$00, $1A}, {$00, $1B}, {$00, $1C}, {$00, $1D},
+    {$00, $1E}, {$00, $1F}
+};
+BSS_SV_NGAIN_MUTE[][]		= {
+    {$00, $20}, {$00, $21}, {$00, $22}, {$00, $23}, {$00, $24}, {$00, $25}, {$00, $26}, {$00, $27}, {$00, $28}, {$00, $29},
+    {$00, $2A}, {$00, $2B}, {$00, $2C}, {$00, $2D}, {$00, $2E}, {$00, $2F}, {$00, $30}, {$00, $31}, {$00, $32}, {$00, $33},
+    {$00, $34}, {$00, $35}, {$00, $36}, {$00, $37}, {$00, $38}, {$00, $39}, {$00, $3A}, {$00, $3B}, {$00, $3C}, {$00, $3D},
+    {$00, $3E}, {$00, $3F}
+};
+BSS_SV_NGAIN_POLARITY[][]	= {
+    {$00, $40}, {$00, $41}, {$00, $42}, {$00, $43}, {$00, $44}, {$00, $45}, {$00, $46}, {$00, $47}, {$00, $48}, {$00, $49},
+    {$00, $4A}, {$00, $4B}, {$00, $4C}, {$00, $4D}, {$00, $4E}, {$00, $4F}, {$00, $50}, {$00, $51}, {$00, $52}, {$00, $53},
+    {$00, $54}, {$00, $55}, {$00, $56}, {$00, $57}, {$00, $58}, {$00, $59}, {$00, $5A}, {$00, $5B}, {$00, $5C}, {$00, $5D},
+    {$00, $5E}, {$00, $5F}
+};
+
+BSS_SV_NGAIN_MASTER_GAIN[]	= {$00, $60};
+BSS_SV_NGAIN_MASTER_MUTE[]	= {$00, $61};
 
 (***********************************************************)
 (*              DATA TYPE DEFINITIONS GO BELOW             *)
