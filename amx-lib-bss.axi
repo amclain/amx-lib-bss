@@ -349,6 +349,17 @@ define_function slong bssEncodeGain(double value)
     
     // TODO: This equation is returning a function call error.
     
+    /*
+	The AMX NetLinx Laungage Reference Guide states that the math
+	functions are only available in firmware version 4 or higher.
+	However, the highest version of master firmware at this time
+	is v3.60.  Looks like this function won't work until AMX
+	releases firmware that supports the math functions.
+	
+	Page 125
+	http://www.amx.com/assets/manuals/NetLinx.LanguageReferenceGuide.pdf
+    */
+    
     return type_cast(-1 * ((log10_value(abs_value(value / 10)) * 200000) - 100000));
 }
 
