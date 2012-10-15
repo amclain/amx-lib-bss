@@ -206,6 +206,17 @@ DEFINE_MUTUALLY_EXCLUSIVE
 (* EXAMPLE: DEFINE_CALL '<NAME>' (<PARAMETERS>) *)
 
 /*
+ *  The log10_value() function was removed from the NetLinx API
+ *  without notice from AMX. This code allows the library to
+ *  compile until a real log10 function is substituted.
+ */
+#if_not_defined log10_value
+    define_function double log10_value(double value) {
+	return 0;
+    }
+#end_if
+
+/*
  *  Set state variable.
  */
 define_function bssSet(char control[], slong value)
