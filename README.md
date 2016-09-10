@@ -74,3 +74,7 @@ state variable to the HiQnet address passed to it.
 A network connection only needs to be established from AMX to one BSS device,
 since HiQnet can pass messages between nodes. Bind `vdvBSS` to one physical
 device.
+
+### Examples
+
+See the [examples](examples) directory for source code examples.
