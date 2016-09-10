@@ -49,6 +49,10 @@ GitHub repositories.
 
 ## Usage
 
+### Include
+
+Simply include the file `amx-lib-bss.axi` in your project.
+
 ### Conventions
 
 All elements exposed globally by this library are prefixed with `BSS`.
