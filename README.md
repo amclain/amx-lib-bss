@@ -5,6 +5,16 @@ amx-lib-bss
 This library contains the code to interface with BSS Soundweb London devices,
 like the BLU series products.
 
+It is assumed the developer has read the Soundweb London Interface Kit
+documentation ([London DI Kit.pdf](http://www.jands.com.au/__data/assets/pdf_file/0009/38475/London_DI_Kit_v2.pdf))
+provided by BSS. The conventions used in this library try to follow the
+terminology used by BSS. A copy of the PDF is installed in the London Architect
+application directory, which by default is:
+
+```text
+    C:\Program Files\Harman Pro\London Architect\London DI Kit.pdf
+```
+
 
 ## Download
 
