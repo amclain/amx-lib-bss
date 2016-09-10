@@ -45,3 +45,32 @@ https://github.com/amclain/amx-lib-bss/issues
 
 Mercurial users can use [Hg-Git](http://hg-git.github.io/) to interact with
 GitHub repositories.
+
+
+## Usage
+
+### Conventions
+
+All elements exposed globally by this library are prefixed with `BSS`.
+    
+Underscores prefixing function names indicate low-level functions used by this
+library. These functions typically won't need to be used by the control system
+developer.
+
+BSS controls are referenced by an 8-byte array consisting of the object's 6-byte
+HiQnet Address (node, virtual device, object) followed by the parameter's 2-byte
+state variable ID. This looks like:
+
+```text
+MY_FADERS[] = {$05, $F1, $03, $00, $01, $07, $4E, $20}
+               ------ HiQnet Address ------  -- SV --
+```
+
+It is also possible for a program to only store the HiQnet addresses and append
+the state variable when calling this API. For example, calling a `setVolume()`
+function will always adjust a gain, so the function can append the gain fader
+state variable to the HiQnet address passed to it.
+
+A network connection only needs to be established from AMX to one BSS device,
+since HiQnet can pass messages between nodes. Bind `vdvBSS` to one physical
+device.

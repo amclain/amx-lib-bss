@@ -36,10 +36,10 @@
     MY_FADERS[] = {$05, $F1, $03, $00, $01, $07, $4E, $20}
                    ------ HiQnet Address ------  -- SV --
     
-    It is also possible to only store the HiQnet addresses and append
-    the state variable when calling this API.  For example, calling a
-    setVolume() function will always adjust a gain, so the function can
-    append the gain fader state variable to the HiQnet address passed
+    It is also possible for a program to only store the HiQnet addresses
+    and append the state variable when calling this API.  For example,
+    calling a setVolume() function will always adjust a gain, so the function
+    can append the gain fader state variable to the HiQnet address passed
     to it.
     
     A network connection only needs to be established from AMX to one
