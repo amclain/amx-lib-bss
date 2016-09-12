@@ -1,6 +1,6 @@
 (***********************************************************
     AMX BSS API
-    v0.1.0
+    v1.0.0
     
     Website: https://github.com/amclain/amx-lib-bss
     
