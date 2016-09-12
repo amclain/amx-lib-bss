@@ -3,7 +3,7 @@
 amx-lib-bss
 
 This library contains the code to interface with BSS Soundweb London devices,
-like the BLU series products.
+like the BLU series products. It pairs well with [amx-lib-volume](https://github.com/amclain/amx-lib-volume).
 
 It is assumed the developer has read the Soundweb London Interface Kit
 documentation ([London DI Kit.pdf](http://www.jands.com.au/__data/assets/pdf_file/0009/38475/London_DI_Kit_v2.pdf))
