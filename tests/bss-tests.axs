@@ -2,7 +2,7 @@
     BSS SOUNDWEB LONDON API
     TESTS
     
-    Website: https://sourceforge.net/projects/amx-lib-bss/
+    Website: https://github.com/amclain/amx-lib-bss
     
     
     These functions test the library's functionality.

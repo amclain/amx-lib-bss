@@ -2,7 +2,7 @@
     BSS SOUNDWEB LONDON PROTOCOL
     TESTS
     
-    Website: https://sourceforge.net/projects/[Future]
+    Website: https://github.com/amclain/amx-lib-bss
     
     
     These functions test the library's functionality.

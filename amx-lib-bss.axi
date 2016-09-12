@@ -2,7 +2,7 @@
     AMX BSS API
     v0.1.0
     
-    Website: https://sourceforge.net/projects/amx-lib-bss/
+    Website: https://github.com/amclain/amx-lib-bss
     
     
  -- THIS IS A THIRD-PARTY LIBRARY AND IS NOT AFFILIATED WITH --
